@@ -185,3 +185,93 @@ export interface AuditLog {
   ipAddress: string;
   timestamp: string;
 }
+
+export interface Teacher {
+  id: string;
+  schoolId: string;
+  employeeCode: string;
+  name: string;
+  email: string;
+  phone: string;
+  department: string;
+  designation: string;
+  assignedClasses: string[];
+  assignedSubjects: string[];
+  salary: number;
+  status: 'active' | 'on_leave';
+  joinedDate: string;
+}
+
+export interface Homework {
+  id: string;
+  schoolId: string;
+  grade: string;
+  section: string;
+  subject: string;
+  title: string;
+  description: string;
+  assignedBy: string;
+  dueDate: string;
+  submissionsCount: number;
+  totalStudents: number;
+  createdAt: string;
+}
+
+export interface Notice {
+  id: string;
+  schoolId: string;
+  title: string;
+  content: string;
+  category: 'academic' | 'administrative' | 'sports' | 'urgent';
+  targetAudience: 'all' | 'teachers' | 'students' | 'parents';
+  author: string;
+  date: string;
+  pinned: boolean;
+}
+
+export interface LibraryBook {
+  id: string;
+  schoolId: string;
+  isbn: string;
+  title: string;
+  author: string;
+  category: string;
+  shelfLocation: string;
+  totalCopies: number;
+  availableCopies: number;
+  status: 'available' | 'reserved' | 'borrowed';
+}
+
+export interface TransportRoute {
+  id: string;
+  schoolId: string;
+  routeNumber: string;
+  routeName: string;
+  vehicleNumber: string;
+  driverName: string;
+  driverPhone: string;
+  capacity: number;
+  assignedStudentsCount: number;
+  stops: string[];
+  status: 'on_schedule' | 'delayed' | 'maintenance';
+}
+
+export interface PayrollRecord {
+  id: string;
+  schoolId: string;
+  employeeId: string;
+  employeeName: string;
+  designation: string;
+  department: string;
+  month: string;
+  year: number;
+  basicSalary: number;
+  allowances: number;
+  deductions: number;
+  netPayable: number;
+  paymentMethod: PaymentMethod;
+  status: 'paid' | 'pending';
+  paidDate?: string;
+  voucherNumber?: string;
+}
+

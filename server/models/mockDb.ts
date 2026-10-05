@@ -9,7 +9,13 @@ import {
   Exam, 
   ExamResult, 
   AuditLog,
-  UserRole
+  UserRole,
+  Teacher,
+  Homework,
+  Notice,
+  LibraryBook,
+  TransportRoute,
+  PayrollRecord
 } from '../types/index.js';
 
 export interface DatabaseState {
@@ -23,6 +29,12 @@ export interface DatabaseState {
   exams: Exam[];
   examResults: ExamResult[];
   auditLogs: AuditLog[];
+  teachers: Teacher[];
+  homework: Homework[];
+  notices: Notice[];
+  libraryBooks: LibraryBook[];
+  transportRoutes: TransportRoute[];
+  payroll: PayrollRecord[];
 }
 
 const DEFAULT_SCHOOL_ID = 'sch_aethel_01';
@@ -702,6 +714,258 @@ const initialAuditLogs: AuditLog[] = [
   },
 ];
 
+const initialTeachers: Teacher[] = [
+  {
+    id: 'tch_001',
+    schoolId: DEFAULT_SCHOOL_ID,
+    employeeCode: 'FAC-PHYS-01',
+    name: 'Prof. Marcus Vance',
+    email: 'marcus.vance@aethel.edu',
+    phone: '+1 (617) 555-0102',
+    department: 'Natural Sciences & AP Physics',
+    designation: 'Chair of Physics & Robotics Lab Director',
+    assignedClasses: ['Grade 11 - Section A', 'Grade 12 - Section A'],
+    assignedSubjects: ['AP Physics C', 'Robotics Seminar'],
+    salary: 8250.00,
+    status: 'active',
+    joinedDate: '2021-08-15',
+  },
+  {
+    id: 'tch_002',
+    schoolId: DEFAULT_SCHOOL_ID,
+    employeeCode: 'FAC-MATH-02',
+    name: 'Dr. Sarah Holloway',
+    email: 'sarah.holloway@aethel.edu',
+    phone: '+1 (617) 555-0144',
+    department: 'Mathematics & Computing',
+    designation: 'Senior Faculty in Advanced Calculus',
+    assignedClasses: ['Grade 11 - Section A', 'Grade 12 - Section B'],
+    assignedSubjects: ['Multivariable Calculus', 'Linear Algebra'],
+    salary: 8500.00,
+    status: 'active',
+    joinedDate: '2019-09-01',
+  },
+  {
+    id: 'tch_003',
+    schoolId: DEFAULT_SCHOOL_ID,
+    employeeCode: 'FAC-HUM-03',
+    name: 'Prof. Julian Aris',
+    email: 'julian.aris@aethel.edu',
+    phone: '+1 (617) 555-0167',
+    department: 'Humanities & Rhetoric',
+    designation: 'Dean of Humanities',
+    assignedClasses: ['Grade 11 - Section A', 'Grade 10 - Section B'],
+    assignedSubjects: ['World Literature', 'Philosophy & Ethics'],
+    salary: 7900.00,
+    status: 'active',
+    joinedDate: '2020-01-10',
+  },
+];
+
+const initialHomework: Homework[] = [
+  {
+    id: 'hw_001',
+    schoolId: DEFAULT_SCHOOL_ID,
+    grade: 'Grade 11',
+    section: 'A',
+    subject: 'AP Physics C',
+    title: 'Lagrangian Mechanics Problem Set 4',
+    description: 'Solve rotational dynamics problems 14 through 28 on non-inertial reference frames with friction tensors.',
+    assignedBy: 'Prof. Marcus Vance',
+    dueDate: '2026-10-08',
+    submissionsCount: 22,
+    totalStudents: 26,
+    createdAt: '2026-10-02T10:00:00.000Z',
+  },
+  {
+    id: 'hw_002',
+    schoolId: DEFAULT_SCHOOL_ID,
+    grade: 'Grade 11',
+    section: 'A',
+    subject: 'Multivariable Calculus',
+    title: 'Stokes Theorem Vector Field Application',
+    description: 'Complete 3D surface flux integration proofs and verify divergence theorem for cylindrical fluid flow.',
+    assignedBy: 'Dr. Sarah Holloway',
+    dueDate: '2026-10-10',
+    submissionsCount: 18,
+    totalStudents: 26,
+    createdAt: '2026-10-03T11:30:00.000Z',
+  },
+  {
+    id: 'hw_003',
+    schoolId: DEFAULT_SCHOOL_ID,
+    grade: 'Grade 9',
+    section: 'B',
+    subject: 'Robotics Seminar',
+    title: 'Kinematic Microcontroller Firmware',
+    description: 'Upload PID motor control feedback loop for dual DC motor chassis with rotary encoder feedback.',
+    assignedBy: 'Prof. Marcus Vance',
+    dueDate: '2026-10-12',
+    submissionsCount: 14,
+    totalStudents: 24,
+    createdAt: '2026-10-04T09:00:00.000Z',
+  },
+];
+
+const initialNotices: Notice[] = [
+  {
+    id: 'not_001',
+    schoolId: DEFAULT_SCHOOL_ID,
+    title: 'Autumn Academic Mid-Term Schedule Published',
+    content: 'Formal examination timetables and room proctors for Grades 9 through 12 have been ratified by the assessment board. Proctored sessions commence October 18, 2026.',
+    category: 'academic',
+    targetAudience: 'all',
+    author: 'Elena Rostova, M.Ed.',
+    date: '2026-10-04',
+    pinned: true,
+  },
+  {
+    id: 'not_002',
+    schoolId: DEFAULT_SCHOOL_ID,
+    title: 'Campus Solar Array Maintenance & Power Schedule',
+    content: 'The Facilities Engineering office will conduct routine grid inverter telemetry tests on Saturday, October 10. Server infrastructure will run uninterrupted on clean auxiliary battery backup.',
+    category: 'administrative',
+    targetAudience: 'teachers',
+    author: 'Campus Facilities Office',
+    date: '2026-10-03',
+    pinned: false,
+  },
+  {
+    id: 'not_003',
+    schoolId: DEFAULT_SCHOOL_ID,
+    title: 'All-State Science & Arts Symposium Delegations',
+    content: 'Congratulations to our senior robotics and chamber orchestra qualifiers representing Aethel Academy at the Boston Academic Invitational next weekend.',
+    category: 'sports',
+    targetAudience: 'all',
+    author: 'Chancellor Office',
+    date: '2026-10-01',
+    pinned: false,
+  },
+];
+
+const initialLibraryBooks: LibraryBook[] = [
+  {
+    id: 'bk_001',
+    schoolId: DEFAULT_SCHOOL_ID,
+    isbn: '978-0134092669',
+    title: 'University Physics with Modern Physics (14th Ed)',
+    author: 'Young & Freedman',
+    category: 'Physics & STEM',
+    shelfLocation: 'Stack 4 - Shelf B',
+    totalCopies: 12,
+    availableCopies: 5,
+    status: 'available',
+  },
+  {
+    id: 'bk_002',
+    schoolId: DEFAULT_SCHOOL_ID,
+    isbn: '978-0321878960',
+    title: 'Calculus: Early Transcendentals',
+    author: 'James Stewart',
+    category: 'Mathematics',
+    shelfLocation: 'Stack 2 - Shelf A',
+    totalCopies: 15,
+    availableCopies: 3,
+    status: 'available',
+  },
+  {
+    id: 'bk_003',
+    schoolId: DEFAULT_SCHOOL_ID,
+    isbn: '978-0262033848',
+    title: 'Introduction to Algorithms (CLRS 3rd Ed)',
+    author: 'Cormen, Leiserson, Rivest, Stein',
+    category: 'Computer Science',
+    shelfLocation: 'Stack 6 - Shelf C',
+    totalCopies: 8,
+    availableCopies: 2,
+    status: 'available',
+  },
+];
+
+const initialTransportRoutes: TransportRoute[] = [
+  {
+    id: 'rte_001',
+    schoolId: DEFAULT_SCHOOL_ID,
+    routeNumber: 'BUS-01',
+    routeName: 'Cambridge North - Harvard Square Express',
+    vehicleNumber: 'EV-BUS-802',
+    driverName: 'Robert Gallagher',
+    driverPhone: '+1 (617) 555-0812',
+    capacity: 44,
+    assignedStudentsCount: 38,
+    stops: ['Porter Square', 'Harvard Yard', 'Memorial Drive', 'Aethel Campus Terminal'],
+    status: 'on_schedule',
+  },
+  {
+    id: 'rte_002',
+    schoolId: DEFAULT_SCHOOL_ID,
+    routeNumber: 'BUS-02',
+    routeName: 'Somerville & Davis Square Route',
+    vehicleNumber: 'EV-BUS-804',
+    driverName: 'Evelyn Ramos',
+    driverPhone: '+1 (617) 555-0814',
+    capacity: 44,
+    assignedStudentsCount: 42,
+    stops: ['Davis Square', 'Elm Street', 'Concord Ave', 'Aethel Campus Terminal'],
+    status: 'on_schedule',
+  },
+];
+
+const initialPayroll: PayrollRecord[] = [
+  {
+    id: 'pay_001',
+    schoolId: DEFAULT_SCHOOL_ID,
+    employeeId: 'tch_001',
+    employeeName: 'Prof. Marcus Vance',
+    designation: 'Chair of Physics',
+    department: 'Natural Sciences',
+    month: 'September',
+    year: 2026,
+    basicSalary: 8250.00,
+    allowances: 650.00,
+    deductions: 920.00,
+    netPayable: 7980.00,
+    paymentMethod: 'bank_transfer',
+    status: 'paid',
+    paidDate: '2026-10-01',
+    voucherNumber: 'PAY-SEP-26A',
+  },
+  {
+    id: 'pay_002',
+    schoolId: DEFAULT_SCHOOL_ID,
+    employeeId: 'tch_002',
+    employeeName: 'Dr. Sarah Holloway',
+    designation: 'Senior Faculty',
+    department: 'Mathematics',
+    month: 'September',
+    year: 2026,
+    basicSalary: 8500.00,
+    allowances: 700.00,
+    deductions: 950.00,
+    netPayable: 8250.00,
+    paymentMethod: 'bank_transfer',
+    status: 'paid',
+    paidDate: '2026-10-01',
+    voucherNumber: 'PAY-SEP-26B',
+  },
+  {
+    id: 'pay_003',
+    schoolId: DEFAULT_SCHOOL_ID,
+    employeeId: 'tch_003',
+    employeeName: 'Prof. Julian Aris',
+    designation: 'Dean of Humanities',
+    department: 'Humanities',
+    month: 'October',
+    year: 2026,
+    basicSalary: 7900.00,
+    allowances: 500.00,
+    deductions: 880.00,
+    netPayable: 7520.00,
+    paymentMethod: 'bank_transfer',
+    status: 'pending',
+  },
+];
+
 // Singleton In-Memory Datastore
 class InMemoryDatabase {
   private state: DatabaseState = {
@@ -715,6 +979,12 @@ class InMemoryDatabase {
     exams: [...initialExams],
     examResults: [...initialExamResults],
     auditLogs: [...initialAuditLogs],
+    teachers: [...initialTeachers],
+    homework: [...initialHomework],
+    notices: [...initialNotices],
+    libraryBooks: [...initialLibraryBooks],
+    transportRoutes: [...initialTransportRoutes],
+    payroll: [...initialPayroll],
   };
 
   // User & Auth
@@ -1027,6 +1297,145 @@ class InMemoryDatabase {
       upcomingExams,
       recentActivities: this.state.auditLogs.slice(0, 5),
     };
+  }
+
+  // Teachers / Faculty
+  getTeachers() {
+    return this.state.teachers;
+  }
+
+  createTeacher(data: Omit<Teacher, 'id' | 'schoolId' | 'employeeCode' | 'status' | 'joinedDate'>) {
+    const id = `tch_${Date.now()}`;
+    const employeeCode = `FAC-${Math.floor(100 + Math.random() * 900)}`;
+    const newTeacher: Teacher = {
+      ...data,
+      id,
+      schoolId: DEFAULT_SCHOOL_ID,
+      employeeCode,
+      status: 'active',
+      joinedDate: new Date().toISOString().split('T')[0],
+    };
+    this.state.teachers.unshift(newTeacher);
+    this.logAudit({
+      userId: 'usr_admin_01',
+      userName: 'Elena Rostova, M.Ed.',
+      userRole: 'school_admin',
+      action: 'CREATE',
+      resource: 'FacultyProfile',
+      resourceId: id,
+      details: `Appointed faculty instructor ${data.name} (${data.department})`,
+    });
+    return newTeacher;
+  }
+
+  // Homework & Assignments
+  getHomework(grade?: string, section?: string) {
+    return this.state.homework.filter(h => {
+      if (grade && h.grade !== grade) return false;
+      if (section && h.section !== section) return false;
+      return true;
+    });
+  }
+
+  createHomework(data: Omit<Homework, 'id' | 'schoolId' | 'submissionsCount' | 'totalStudents' | 'createdAt'>) {
+    const id = `hw_${Date.now()}`;
+    const newHw: Homework = {
+      ...data,
+      id,
+      schoolId: DEFAULT_SCHOOL_ID,
+      submissionsCount: 0,
+      totalStudents: 26,
+      createdAt: new Date().toISOString(),
+    };
+    this.state.homework.unshift(newHw);
+    this.logAudit({
+      userId: 'usr_teacher_01',
+      userName: data.assignedBy,
+      userRole: 'teacher',
+      action: 'CREATE',
+      resource: 'CourseHomework',
+      resourceId: id,
+      details: `Published assignment "${data.title}" for ${data.grade}-${data.section} (Due: ${data.dueDate})`,
+    });
+    return newHw;
+  }
+
+  // Notices & Bulletin Board
+  getNotices() {
+    return this.state.notices;
+  }
+
+  createNotice(data: Omit<Notice, 'id' | 'schoolId' | 'date'>) {
+    const id = `not_${Date.now()}`;
+    const newNotice: Notice = {
+      ...data,
+      id,
+      schoolId: DEFAULT_SCHOOL_ID,
+      date: new Date().toISOString().split('T')[0],
+    };
+    this.state.notices.unshift(newNotice);
+    this.logAudit({
+      userId: 'usr_admin_01',
+      userName: data.author,
+      userRole: 'school_admin',
+      action: 'CREATE',
+      resource: 'NoticeBulletin',
+      resourceId: id,
+      details: `Dispatched institutional bulletin: "${data.title}" (${data.category.toUpperCase()})`,
+    });
+    return newNotice;
+  }
+
+  // Library Management
+  getLibraryBooks() {
+    return this.state.libraryBooks;
+  }
+
+  checkoutBook(bookId: string) {
+    const book = this.state.libraryBooks.find(b => b.id === bookId);
+    if (!book) throw new Error('Book not found in circulation catalog');
+    if (book.availableCopies <= 0) throw new Error('All copies currently checked out');
+    book.availableCopies -= 1;
+    book.status = book.availableCopies === 0 ? 'borrowed' : 'available';
+    return book;
+  }
+
+  // Fleet Transport
+  getTransportRoutes() {
+    return this.state.transportRoutes;
+  }
+
+  // Faculty Payroll with double-entry ledger synchronization
+  getPayroll() {
+    return this.state.payroll;
+  }
+
+  disbursePayroll(payrollId: string, recordedBy: string) {
+    const record = this.state.payroll.find(p => p.id === payrollId);
+    if (!record) throw new Error('Payroll record not found');
+    if (record.status === 'paid') throw new Error('Payroll already settled');
+
+    record.status = 'paid';
+    record.paidDate = new Date().toISOString().split('T')[0];
+    record.voucherNumber = `PAY-${record.month.substring(0, 3).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
+
+    // Automatically debit Faculty Payroll ledger EXP-201
+    const salaryLedger = this.state.ledgers.find(l => l.code === 'EXP-201') || this.state.ledgers[1];
+    if (salaryLedger) {
+      this.createTransaction({
+        ledgerId: salaryLedger.id,
+        type: 'expense',
+        amount: record.netPayable,
+        date: new Date().toISOString(),
+        category: 'Faculty Compensation',
+        paymentMethod: record.paymentMethod,
+        referenceNumber: record.voucherNumber,
+        description: `Direct deposit payroll compensation for ${record.employeeName} (${record.designation})`,
+        createdBy: recordedBy,
+      });
+    }
+
+    return record;
   }
 }
 

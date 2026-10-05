@@ -34,6 +34,16 @@ import { ExamsTab } from './components/dashboard/ExamsTab.js';
 import { TimetableTab } from './components/dashboard/TimetableTab.js';
 import { AuditLogsTab } from './components/dashboard/AuditLogsTab.js';
 import { SettingsTab } from './components/dashboard/SettingsTab.js';
+import { TeachersTab } from './components/dashboard/TeachersTab.js';
+import { PayrollTab } from './components/dashboard/PayrollTab.js';
+import { HomeworkTab } from './components/dashboard/HomeworkTab.js';
+import { NoticesTab } from './components/dashboard/NoticesTab.js';
+import { LibraryTab } from './components/dashboard/LibraryTab.js';
+import { TransportTab } from './components/dashboard/TransportTab.js';
+import { StudentPortalView } from './components/dashboard/StudentPortalView.js';
+import { ParentPortalView } from './components/dashboard/ParentPortalView.js';
+import { TeacherPortalView } from './components/dashboard/TeacherPortalView.js';
+import { Teacher, Homework, Notice, LibraryBook, TransportRoute, PayrollRecord } from './types/index.js';
 
 export default function App() {
   const [mode, setMode] = useState<'landing' | 'dashboard'>('landing');
@@ -56,10 +66,16 @@ export default function App() {
   const [ledgers, setLedgers] = useState<Ledger[]>([]);
   const [transactions, setTransactions] = useState<LedgerTransaction[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [payroll, setPayroll] = useState<PayrollRecord[]>([]);
   const [attendance, setAttendance] = useState<AttendanceRecord[]>([]);
   const [fees, setFees] = useState<FeeInvoice[]>([]);
   const [exams, setExams] = useState<Exam[]>([]);
   const [examResults, setExamResults] = useState<ExamResult[]>([]);
+  const [homework, setHomework] = useState<Homework[]>([]);
+  const [notices, setNotices] = useState<Notice[]>([]);
+  const [libraryBooks, setLibraryBooks] = useState<LibraryBook[]>([]);
+  const [transportRoutes, setTransportRoutes] = useState<TransportRoute[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [overview, setOverview] = useState<AnalyticsOverview | null>(null);
 
@@ -106,20 +122,32 @@ export default function App() {
         ledgersData,
         transactionsData,
         studentsData,
+        teachersData,
+        payrollData,
         attendanceData,
         feesData,
         examsData,
         resultsData,
+        homeworkData,
+        noticesData,
+        libraryData,
+        transportData,
         logsData,
         overviewData
       ] = await Promise.all([
         api.getLedgers().catch(() => []),
         api.getTransactions().catch(() => []),
         api.getStudents().catch(() => []),
+        api.getTeachers().catch(() => []),
+        api.getPayroll().catch(() => []),
         api.getAttendance().catch(() => []),
         api.getFees().catch(() => []),
         api.getExams().catch(() => []),
         api.getExamResults().catch(() => []),
+        api.getHomework().catch(() => []),
+        api.getNotices().catch(() => []),
+        api.getLibraryBooks().catch(() => []),
+        api.getTransportRoutes().catch(() => []),
         api.getAuditLogs().catch(() => []),
         api.getOverview().catch(() => null),
       ]);
@@ -127,10 +155,16 @@ export default function App() {
       if (ledgersData?.length) setLedgers(ledgersData);
       if (transactionsData?.length) setTransactions(transactionsData);
       if (studentsData?.length) setStudents(studentsData);
+      if (teachersData?.length) setTeachers(teachersData);
+      if (payrollData?.length) setPayroll(payrollData);
       if (attendanceData?.length) setAttendance(attendanceData);
       if (feesData?.length) setFees(feesData);
       if (examsData?.length) setExams(examsData);
       if (resultsData?.length) setExamResults(resultsData);
+      if (homeworkData?.length) setHomework(homeworkData);
+      if (noticesData?.length) setNotices(noticesData);
+      if (libraryData?.length) setLibraryBooks(libraryData);
+      if (transportData?.length) setTransportRoutes(transportData);
       if (logsData?.length) setAuditLogs(logsData);
       if (overviewData) setOverview(overviewData);
     } catch (err) {
@@ -240,6 +274,41 @@ export default function App() {
       recordedBy: currentUser.name,
     });
     setFees(prev => prev.map(f => f.id === updatedFee.id ? updatedFee : f));
+    loadData();
+  };
+
+  // Teacher actions
+  const handleAppointTeacher = async (data: any) => {
+    const newT = await api.createTeacher(data);
+    setTeachers(prev => [newT, ...prev]);
+    loadData();
+  };
+
+  // Payroll actions
+  const handleDisbursePayroll = async (payrollId: string) => {
+    const updated = await api.disbursePayroll(payrollId, currentUser.name);
+    setPayroll(prev => prev.map(p => p.id === updated.id ? updated : p));
+    loadData();
+  };
+
+  // Homework actions
+  const handleAssignHomework = async (data: any) => {
+    const newH = await api.createHomework(data);
+    setHomework(prev => [newH, ...prev]);
+    loadData();
+  };
+
+  // Notice actions
+  const handleBroadcastNotice = async (data: any) => {
+    const newN = await api.createNotice(data);
+    setNotices(prev => [newN, ...prev]);
+    loadData();
+  };
+
+  // Library actions
+  const handleCheckoutBook = async (bookId: string) => {
+    const updated = await api.checkoutBook(bookId);
+    setLibraryBooks(prev => prev.map(b => b.id === updated.id ? updated : b));
     loadData();
   };
 
@@ -375,14 +444,42 @@ export default function App() {
         {/* Viewport Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-y-auto">
           {currentView === 'overview' && (
-            <OverviewTab
-              overview={overview}
-              currentUser={currentUser}
-              onNavigate={setCurrentView}
-              onQuickAction={(action) => {
-                if (action === 'record_tx') setCurrentView('ledgers');
-              }}
-            />
+            currentUser.role === 'student' ? (
+              <StudentPortalView
+                student={students[0] || { firstName: 'Sophia', lastName: 'Thorne', admissionNumber: 'AET-2024-001', grade: 'Grade 11', section: 'A', rollNumber: '1101', attendanceRate: 98.4, status: 'enrolled' } as any}
+                results={examResults}
+                fees={fees.filter(f => f.studentId === 'stu_001')}
+                homework={homework}
+              />
+            ) : currentUser.role === 'parent' ? (
+              <ParentPortalView
+                childrenStudents={students.filter(s => s.guardianName.includes('Thorne'))}
+                allFees={fees}
+                allResults={examResults}
+                onPayChildFee={(fee) => {
+                  setCurrentView('fees');
+                }}
+              />
+            ) : currentUser.role === 'teacher' ? (
+              <TeacherPortalView
+                currentUser={currentUser}
+                students={students}
+                homework={homework}
+                onTakeAttendance={() => setCurrentView('attendance')}
+                onPostHomework={() => {
+                  setCurrentView('homework');
+                }}
+              />
+            ) : (
+              <OverviewTab
+                overview={overview}
+                currentUser={currentUser}
+                onNavigate={setCurrentView}
+                onQuickAction={(action) => {
+                  if (action === 'record_tx') setCurrentView('ledgers');
+                }}
+              />
+            )
           )}
 
           {currentView === 'ledgers' && (
@@ -398,6 +495,13 @@ export default function App() {
             <StudentsTab
               students={students}
               onEnrollStudent={handleEnrollStudent}
+            />
+          )}
+
+          {currentView === 'teachers' && (
+            <TeachersTab
+              teachers={teachers}
+              onAppointTeacher={handleAppointTeacher}
             />
           )}
 
@@ -417,6 +521,13 @@ export default function App() {
             />
           )}
 
+          {currentView === 'payroll' && (
+            <PayrollTab
+              payroll={payroll}
+              onDisbursePayroll={handleDisbursePayroll}
+            />
+          )}
+
           {currentView === 'exams' && (
             <ExamsTab
               exams={exams}
@@ -424,8 +535,35 @@ export default function App() {
             />
           )}
 
+          {currentView === 'homework' && (
+            <HomeworkTab
+              homework={homework}
+              onAssignHomework={handleAssignHomework}
+            />
+          )}
+
           {currentView === 'timetable' && (
             <TimetableTab />
+          )}
+
+          {currentView === 'notices' && (
+            <NoticesTab
+              notices={notices}
+              onBroadcastNotice={handleBroadcastNotice}
+            />
+          )}
+
+          {currentView === 'library' && (
+            <LibraryTab
+              books={libraryBooks}
+              onCheckoutBook={handleCheckoutBook}
+            />
+          )}
+
+          {currentView === 'transport' && (
+            <TransportTab
+              routes={transportRoutes}
+            />
           )}
 
           {currentView === 'audit_logs' && (

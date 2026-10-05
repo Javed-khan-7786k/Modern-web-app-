@@ -11,7 +11,12 @@ import {
   Settings, 
   LogOut,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  Briefcase,
+  DollarSign,
+  BookOpen,
+  Bell,
+  Bus
 } from 'lucide-react';
 import { User, UserRole, DashboardView } from '../../types/index.js';
 
@@ -51,6 +56,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       roles: ['super_admin', 'school_admin', 'teacher'],
     },
     {
+      id: 'teachers',
+      label: 'Faculty Directory',
+      icon: Briefcase,
+      roles: ['super_admin', 'school_admin'],
+    },
+    {
       id: 'attendance',
       label: 'Attendance & Clock',
       icon: CalendarCheck,
@@ -63,9 +74,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
       roles: ['super_admin', 'school_admin', 'accountant', 'student', 'parent'],
     },
     {
+      id: 'payroll',
+      label: 'Faculty Payroll',
+      icon: DollarSign,
+      roles: ['super_admin', 'school_admin', 'accountant'],
+    },
+    {
       id: 'exams',
       label: 'Exams & Reports',
       icon: GraduationCap,
+      roles: ['super_admin', 'school_admin', 'teacher', 'student', 'parent'],
+    },
+    {
+      id: 'homework',
+      label: 'Homework & Tasks',
+      icon: BookOpen,
       roles: ['super_admin', 'school_admin', 'teacher', 'student', 'parent'],
     },
     {
@@ -73,6 +96,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Class Schedules',
       icon: Clock,
       roles: ['super_admin', 'school_admin', 'teacher', 'student', 'parent'],
+    },
+    {
+      id: 'notices',
+      label: 'Notices & Circulars',
+      icon: Bell,
+      roles: ['super_admin', 'school_admin', 'teacher', 'student', 'parent'],
+    },
+    {
+      id: 'library',
+      label: 'Library Catalog',
+      icon: BookOpen,
+      roles: ['super_admin', 'school_admin', 'teacher', 'student'],
+    },
+    {
+      id: 'transport',
+      label: 'Fleet Transport',
+      icon: Bus,
+      roles: ['super_admin', 'school_admin', 'student', 'parent'],
     },
     {
       id: 'audit_logs',

@@ -13,6 +13,12 @@ Aethel School OS replaces disparate spreadsheets and outdated legacy ERPs with a
 - **Student Information System (SIS)**: Complete scholar lifecycle management, cohort balancing, guardian dossiers, and student transcripts.
 - **Classroom Roll Call & Attendance**: Real-time attendance register supporting Present, Late, Absent, and Excused status with automated audit logs.
 - **Bursar Desk & Fee Invoicing**: Multi-tier fee schedules, payment capture (ACH, Card, Cheque, Cash), and immediate synchronization with general ledgers.
+- **Faculty Payroll & Compensation**: Automated monthly pay registers, tax/pension deduction calculations, printable payslips, and direct debit to General Ledger `EXP-201 Faculty Payroll`.
+- **Homework & Digital Coursework**: Problem set publishing, cohort assignment, and submission velocity metrics.
+- **Campus Bulletins & Circulars**: Priority categorization (Academic, Urgent, Facilities) and targeted broadcast delivery.
+- **Library Catalog & Circulation Desk**: ISBN index, shelf locations, and one-click copy issue tracking.
+- **Student Transit & Fleet Logistics**: Bus route monitoring, vehicle registration, driver contact logs, and designated boarding stops.
+- **Role-Tailored Portals**: Dedicated Student Scholar ID card and transcripts, Parent multiple children switcher (Sophia & Julian Thorne), and Teacher classroom consoles.
 - **Examinations & Scorecards**: Proctored assessment scheduling, subject markbooks, grading curves, rank generation, and printable official transcripts.
 - **Role-Based Access Control (RBAC)**: 6 distinct interfaces: Super Admin, School Principal, Teacher, Student, Parent, and Accountant.
 - **Immutable Forensic Audit Trail**: Cryptographic audit log capturing user ID, role, sensitive action, resource, IP address, and timestamp.

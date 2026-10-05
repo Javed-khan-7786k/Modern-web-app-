@@ -193,4 +193,73 @@ export const api = {
   async getOverview(): Promise<AnalyticsOverview> {
     return fetchJson('/analytics/overview');
   },
+
+  // Teachers & Faculty
+  async getTeachers(): Promise<any[]> {
+    return fetchJson('/teachers');
+  },
+
+  async createTeacher(data: any): Promise<any> {
+    return fetchJson('/teachers', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Homework & Assignments
+  async getHomework(grade?: string, section?: string): Promise<any[]> {
+    const q = new URLSearchParams();
+    if (grade) q.set('grade', grade);
+    if (section) q.set('section', section);
+    const queryStr = q.toString() ? `?${q.toString()}` : '';
+    return fetchJson(`/homework${queryStr}`);
+  },
+
+  async createHomework(data: any): Promise<any> {
+    return fetchJson('/homework', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Notices
+  async getNotices(): Promise<any[]> {
+    return fetchJson('/notices');
+  },
+
+  async createNotice(data: any): Promise<any> {
+    return fetchJson('/notices', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  // Library
+  async getLibraryBooks(): Promise<any[]> {
+    return fetchJson('/library');
+  },
+
+  async checkoutBook(bookId: string): Promise<any> {
+    return fetchJson('/library/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ bookId }),
+    });
+  },
+
+  // Transport
+  async getTransportRoutes(): Promise<any[]> {
+    return fetchJson('/transport');
+  },
+
+  // Payroll
+  async getPayroll(): Promise<any[]> {
+    return fetchJson('/payroll');
+  },
+
+  async disbursePayroll(payrollId: string, recordedBy?: string): Promise<any> {
+    return fetchJson('/payroll/disburse', {
+      method: 'POST',
+      body: JSON.stringify({ payrollId, recordedBy }),
+    });
+  },
 };

@@ -38,6 +38,12 @@ export const TopBar: React.FC<TopBarProps> = ({
     fees: { title: 'Fee Schedules & Payment Processing', category: 'Finance & Bursar' },
     exams: { title: 'Term Assessments & Grade Reports', category: 'Examination Board' },
     timetable: { title: 'Master Schedule & Faculty Timetable', category: 'Instructional Planning' },
+    teachers: { title: 'Faculty & Instructor Directory', category: 'Human Resources' },
+    payroll: { title: 'Faculty Compensation & Vouchers', category: 'Treasury & Comptroller' },
+    homework: { title: 'Coursework & Digital Submissions', category: 'Instructional Board' },
+    notices: { title: 'Institutional Bulletins & Circulars', category: 'Campus Communications' },
+    library: { title: 'Library Catalog & Circulation Desk', category: 'Academic Resources' },
+    transport: { title: 'Student Transit & Fleet Logistics', category: 'Campus Operations' },
     audit_logs: { title: 'Immutable Security Audit Trail', category: 'Governance & Compliance' },
     settings: { title: 'Institution Global Preferences', category: 'Administration' },
   };

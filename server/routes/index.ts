@@ -4,6 +4,7 @@ import { LedgerController } from '../controllers/ledgerController.js';
 import { StudentController } from '../controllers/studentController.js';
 import { AcademicController } from '../controllers/academicController.js';
 import { HealthController } from '../controllers/healthController.js';
+import { db } from '../models/mockDb.js';
 
 const router = Router();
 
@@ -45,5 +46,70 @@ router.get('/audit-logs', AcademicController.getAuditLogs);
 
 // System Overview & Analytics
 router.get('/analytics/overview', AcademicController.getOverview);
+
+// Teachers & Faculty
+router.get('/teachers', (req, res) => {
+  return res.json({ success: true, data: db.getTeachers() });
+});
+
+router.post('/teachers', (req, res) => {
+  const teacher = db.createTeacher(req.body);
+  return res.status(201).json({ success: true, data: teacher });
+});
+
+// Homework & Assignments
+router.get('/homework', (req, res) => {
+  const { grade, section } = req.query as { grade?: string; section?: string };
+  return res.json({ success: true, data: db.getHomework(grade, section) });
+});
+
+router.post('/homework', (req, res) => {
+  const hw = db.createHomework(req.body);
+  return res.status(201).json({ success: true, data: hw });
+});
+
+// Notices & Bulletin Board
+router.get('/notices', (req, res) => {
+  return res.json({ success: true, data: db.getNotices() });
+});
+
+router.post('/notices', (req, res) => {
+  const notice = db.createNotice(req.body);
+  return res.status(201).json({ success: true, data: notice });
+});
+
+// Library
+router.get('/library', (req, res) => {
+  return res.json({ success: true, data: db.getLibraryBooks() });
+});
+
+router.post('/library/checkout', (req, res) => {
+  try {
+    const book = db.checkoutBook(req.body.bookId);
+    return res.json({ success: true, data: book });
+  } catch (err: any) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+});
+
+// Fleet Transport
+router.get('/transport', (req, res) => {
+  return res.json({ success: true, data: db.getTransportRoutes() });
+});
+
+// Payroll & Compensation
+router.get('/payroll', (req, res) => {
+  return res.json({ success: true, data: db.getPayroll() });
+});
+
+router.post('/payroll/disburse', (req, res) => {
+  try {
+    const recordedBy = req.body.recordedBy || 'Nolan Hayes, CPA';
+    const record = db.disbursePayroll(req.body.payrollId, recordedBy);
+    return res.json({ success: true, data: record, message: 'Payroll disbursed and debited to General Ledger EXP-201' });
+  } catch (err: any) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+});
 
 export default router;
